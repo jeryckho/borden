@@ -117,15 +117,17 @@ if 'Cube' in D.objects:
 D.scenes['Scene'].render.resolution_x=1080
 D.scenes['Scene'].render.resolution_y=1920
 
+RDR = 0
+
 # #CAM
 zCam = SetPosit(D.objects['Camera'],(2.0,-6.15,3.35),(75,0,20),None)
-zCam.layers[1] = True
-zCam.layers[0] = False
+zCam.layers[1-RDR] = True
+zCam.layers[RDR] = False
 
 # #LIGHT
 zLamp = SetPosit(D.objects['Lamp'],(2.05,-10.15,3.30),(13.5,3.15,98.5),None)
-zLamp.layers[1] = True
-zLamp.layers[0] = False
+zLamp.layers[1-RDR] = True
+zLamp.layers[RDR] = False
 
 MyLight = D.lamps['Lamp']
 MyLight.type='POINT'
@@ -137,21 +139,22 @@ sTex = makeMyTex()
 # #MATERIALS
 M1 = makeMaterial("DWhite", (1, 1, 1))
 AddTexture(M1,sTex)
+
 M2 = makeMaterial("DPink", (1, 0, 0.85))
-AddTexture(M2,sTex)
-makeMaterial("DBlack", (0.2, 0.2, 0.2))
-makeMaterial("DRose", (0.8, 0, 0.6))
+
+M3 = makeMaterial("DBlack", (0.2, 0.2, 0.2))
+AddTexture(M3,sTex)
 
 # #CONSTs
 COL_N = "DWhite"
-RN = 0.25
+RN = 0.35
 
 COL_C = "DBlack"
-RC = 0.1
+RC = 0.15
 
 COL_H = "DWhite"
-RH = 0.08
-MH = 1.5
+RH = 0.1
+MH = 1.75
 
 COL_L = "DPink"
 RL = 0.05
@@ -172,19 +175,43 @@ PH = (
 
 Center = DDPart('Center',(0,0,0),(0,0,0),(RN,RN,RN), COL_N)
 
+######
+#INIT#
+######
+
+#INIT C POS
+C0 = DDPart('C0',P[0],(0,0,0),(RC,RC,RC), COL_C)
+C1 = DDPart('C1',P[3],(0,0,0),(RC,RC,RC), COL_C)
+
+#INIT C GROUP
+SetParent(C0,Center)
+SetParent(C1,Center)
+
+#INIT H POS
+H0 = DDPart('H0',PH[0],(0,0,0),(RH,RH,RH), COL_H)
+H1 = DDPart('H1',PH[3],(0,0,0),(RH,RH,RH), COL_H)
+
+#INIT H GROUP
+SetParent(H0,Center)
+SetParent(H1,Center)
+
+#INIT H LINK POS
+L00 = LinkPart('L00', P[0], PH[0], RL, COL_L)
+L11 = LinkPart('L11', P[3], PH[3], RL, COL_L)
+
+#INIT C LINK GROUP
+SetParent(L00,Center)
+SetParent(L11,Center)
+
 #######
 #FIRST#
 #######
 
 #FIRST C POS
-C0 = DDPart('C0',P[0],(0,0,0),(RC,RC,RC), COL_C)
-C1 = DDPart('C1',P[3],(0,0,0),(RC,RC,RC), COL_C)
 C2 = DDPart('C2',P[1],(0,0,0),(RC,RC,RC), COL_C)
 C3 = DDPart('C3',P[2],(0,0,0),(RC,RC,RC), COL_C)
 
 #FIRST C GROUP
-SetParent(C0,Center)
-SetParent(C1,Center)
 SetParent(C2,Center)
 SetParent(C3,Center)
 
@@ -199,26 +226,18 @@ SetParent(L23,Center)
 SetParent(L31,Center)
 
 #FIRST H POS
-H0 = DDPart('H0',PH[0],(0,0,0),(RH,RH,RH), COL_H)
-H1 = DDPart('H1',PH[3],(0,0,0),(RH,RH,RH), COL_H)
 H2 = DDPart('H2',PH[1],(0,0,0),(RH,RH,RH), COL_H)
 H3 = DDPart('H3',PH[2],(0,0,0),(RH,RH,RH), COL_H)
 
 #FIRST H GROUP
-SetParent(H0,Center)
-SetParent(H1,Center)
 SetParent(H2,Center)
 SetParent(H3,Center)
 
 #FIRST H LINK POS
-L00 = LinkPart('L00', P[0], PH[0], RL, COL_L)
-L11 = LinkPart('L11', P[3], PH[3], RL, COL_L)
 L22 = LinkPart('L22', P[1], PH[1], RL, COL_L)
 L33 = LinkPart('L33', P[2], PH[2], RL, COL_L)
 
 #FIRST C LINK GROUP
-SetParent(L00,Center)
-SetParent(L11,Center)
 SetParent(L22,Center)
 SetParent(L33,Center)
 
