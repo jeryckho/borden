@@ -8,8 +8,6 @@ from mathutils import *
 from math import *
 
 
-YFac = 0.4
-
 def SetParent(childObject,parentObject):
     childObject.parent = parentObject
     childObject.matrix_parent_inverse = parentObject.matrix_world.inverted()
@@ -184,108 +182,62 @@ Center = DDPart('Center',(0,0,0),(0,0,0),(RN,RN,RN), COL_N)
 #INIT#
 ######
 
-#INIT C POS
-C0 = DDPart('C0',P[0],(0,0,0),(RC,RC,RC), COL_C)
-C1 = DDPart('C1',P[3],(0,0,0),(RC,RC,RC), COL_C)
+#INIT C
+SetParent( DDPart('C0',P[0],(0,0,0),(RC,RC,RC), COL_C), Center )
+SetParent( DDPart('C1',P[3],(0,0,0),(RC,RC,RC), COL_C), Center )
 
-#INIT C GROUP
-SetParent(C0,Center)
-SetParent(C1,Center)
-
-#INIT H POS
-H0 = DDPart('H0',PH[0],(0,0,0),(RH,RH,RH), COL_H)
-H1 = DDPart('H1',PH[3],(0,0,0),(RH,RH,RH), COL_H)
-
-#INIT H GROUP
-SetParent(H0,Center)
-SetParent(H1,Center)
-
-#INIT H LINK POS
-L00 = LinkPart('L00', P[0], PH[0], RL, COL_L)
-L11 = LinkPart('L11', P[3], PH[3], RL, COL_L)
+#INIT H
+SetParent( DDPart('H0',PH[0],(0,0,0),(RH,RH,RH), COL_H), Center )
+SetParent( DDPart('H1',PH[3],(0,0,0),(RH,RH,RH), COL_H), Center )
 
 #INIT C LINK GROUP
-SetParent(L00,Center)
-SetParent(L11,Center)
+SetParent( LinkPart('L00', P[0], PH[0], RL, COL_L), Center )
+SetParent( LinkPart('L11', P[3], PH[3], RL, COL_L), Center )
 
 #######
 #FIRST#
 #######
 
-#FIRST C POS
-C2 = DDPart('C2',P[1],(0,0,0),(RC,RC,RC), COL_C)
-C3 = DDPart('C3',P[2],(0,0,0),(RC,RC,RC), COL_C)
+#FIRST C
+SetParent( DDPart('C2',P[1],(0,0,0),(RC,RC,RC), COL_C), Center )
+SetParent( DDPart('C3',P[2],(0,0,0),(RC,RC,RC), COL_C), Center)
 
-#FIRST C GROUP
-SetParent(C2,Center)
-SetParent(C3,Center)
+#FIRST C LINK
+SetParent( LinkPart('L02', P[0], P[1], RL, COL_L), Center )
+SetParent( LinkPart('L23', P[1], P[2], RL, COL_L), Center )
+SetParent( LinkPart('L31', P[2], P[3], RL, COL_L), Center )
 
-#FIRST C LINK POS
-L02 = LinkPart('L01', P[0], P[1], RL, COL_L)
-L23 = LinkPart('L23', P[1], P[2], RL, COL_L)
-L31 = LinkPart('L31', P[2], P[3], RL, COL_L)
+#FIRST H
+SetParent( DDPart('H2',PH[1],(0,0,0),(RH,RH,RH), COL_H), Center )
+SetParent( DDPart('H3',PH[2],(0,0,0),(RH,RH,RH), COL_H), Center )
 
-#FIRST C LINK GROUP
-SetParent(L02,Center)
-SetParent(L23,Center)
-SetParent(L31,Center)
-
-#FIRST H POS
-H2 = DDPart('H2',PH[1],(0,0,0),(RH,RH,RH), COL_H)
-H3 = DDPart('H3',PH[2],(0,0,0),(RH,RH,RH), COL_H)
-
-#FIRST H GROUP
-SetParent(H2,Center)
-SetParent(H3,Center)
-
-#FIRST H LINK POS
-L22 = LinkPart('L22', P[1], PH[1], RL, COL_L)
-L33 = LinkPart('L33', P[2], PH[2], RL, COL_L)
-
-#FIRST C LINK GROUP
-SetParent(L22,Center)
-SetParent(L33,Center)
+#FIRST H LINK
+SetParent( LinkPart('L22', P[1], PH[1], RL, COL_L), Center )
+SetParent( LinkPart('L33', P[2], PH[2], RL, COL_L), Center )
 
 #FIRST ROTATE
 SetRotate(Center, (120,0,0))
 
-########
+#######
 #SECOND#
-########
+#######
 
-#SECOND C POS
-C4 = DDPart('C4',P[1],(0,0,0),(RC,RC,RC), COL_C)
-C5 = DDPart('C5',P[2],(0,0,0),(RC,RC,RC), COL_C)
+#SECOND C
+SetParent( DDPart('C4',P[1],(0,0,0),(RC,RC,RC), COL_C), Center )
+SetParent( DDPart('C5',P[2],(0,0,0),(RC,RC,RC), COL_C), Center)
 
-#SECOND C GROUP
-SetParent(C4,Center)
-SetParent(C5,Center)
+#SECOND C LINK
+SetParent( LinkPart('L04', P[0], P[1], RL, COL_L), Center )
+SetParent( LinkPart('L45', P[1], P[2], RL, COL_L), Center )
+SetParent( LinkPart('L51', P[2], P[3], RL, COL_L), Center )
 
-#SECOND C LINK POS
-L04 = LinkPart('L04', P[0], P[1], RL, COL_L)
-L45 = LinkPart('L45', P[1], P[2], RL, COL_L)
-L51 = LinkPart('L51', P[2], P[3], RL, COL_L)
+#SECOND H
+SetParent( DDPart('H4',PH[1],(0,0,0),(RH,RH,RH), COL_H), Center )
+SetParent( DDPart('H5',PH[2],(0,0,0),(RH,RH,RH), COL_H), Center )
 
-#SECOND C LINK GROUP
-SetParent(L04,Center)
-SetParent(L45,Center)
-SetParent(L51,Center)
-
-#SECOND H POS
-H4 = DDPart('H4',PH[1],(0,0,0),(RH,RH,RH), COL_H)
-H5 = DDPart('H5',PH[2],(0,0,0),(RH,RH,RH), COL_H)
-
-#SECOND H GROUP
-SetParent(H4,Center)
-SetParent(H5,Center)
-
-#SECOND H LINK POS
-L44 = LinkPart('L44', P[1], PH[1], RL, COL_L)
-L55 = LinkPart('L55', P[2], PH[2], RL, COL_L)
-
-#SECOND C LINK GROUP
-SetParent(L44,Center)
-SetParent(L55,Center)
+#SECOND H LINK
+SetParent( LinkPart('L44', P[1], PH[1], RL, COL_L), Center )
+SetParent( LinkPart('L55', P[2], PH[2], RL, COL_L), Center )
 
 #SECOND ROTATE
 SetRotate(Center, (240,0,0))
@@ -294,39 +246,29 @@ SetRotate(Center, (240,0,0))
 #THIRD#
 #######
 
-#THIRD C POS
-C6 = DDPart('C6',P[1],(0,0,0),(RC,RC,RC), COL_C)
-C7 = DDPart('C7',P[2],(0,0,0),(RC,RC,RC), COL_C)
+#THIRD C
+SetParent( DDPart('C6',P[1],(0,0,0),(RC,RC,RC), COL_C), Center )
+SetParent( DDPart('C7',P[2],(0,0,0),(RC,RC,RC), COL_C), Center)
 
-#THIRD C GROUP
-SetParent(C6,Center)
-SetParent(C7,Center)
+#THIRD C LINK
+SetParent( LinkPart('L06', P[0], P[1], RL, COL_L), Center )
+SetParent( LinkPart('L67', P[1], P[2], RL, COL_L), Center )
+SetParent( LinkPart('L71', P[2], P[3], RL, COL_L), Center )
 
-#THIRD C LINK POS
-L06 = LinkPart('L06', P[0], P[1], RL, COL_L)
-L67 = LinkPart('L67', P[1], P[2], RL, COL_L)
-L71 = LinkPart('L71', P[2], P[3], RL, COL_L)
+#THIRD H
+SetParent( DDPart('H6',PH[1],(0,0,0),(RH,RH,RH), COL_H), Center )
+SetParent( DDPart('H7',PH[2],(0,0,0),(RH,RH,RH), COL_H), Center )
 
-#THIRD C LINK GROUP
-SetParent(L06,Center)
-SetParent(L67,Center)
-SetParent(L71,Center)
+#THIRD H LINK
+SetParent( LinkPart('L66', P[1], PH[1], RL, COL_L), Center )
+SetParent( LinkPart('L77', P[2], PH[2], RL, COL_L), Center )
 
-#THIRD H POS
-H6 = DDPart('H6',PH[1],(0,0,0),(RH,RH,RH), COL_H)
-H7 = DDPart('H7',PH[2],(0,0,0),(RH,RH,RH), COL_H)
+#THIRD ROTATE
+SetRotate(Center, (0,0,0))
 
-#THIRD H GROUP
-SetParent(H6,Center)
-SetParent(H7,Center)
-
-#THIRD H LINK POS
-L66 = LinkPart('L66', P[1], PH[1], RL, COL_L)
-L77 = LinkPart('L77', P[2], PH[2], RL, COL_L)
-
-#THIRD C LINK GROUP
-SetParent(L66,Center)
-SetParent(L77,Center)
+######
+#THEN#
+######
 
 for obj in C.scene.objects:
     obj.select = False
