@@ -1,0 +1,10 @@
+14:10
+
+140/100 => 160/120/10
+
+0.95*0.95*1
+0.1
+
+hit, loc, norm, face = cb.ray_cast( pOrg, vDir)
+
+(pl2bat)
