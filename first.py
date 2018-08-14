@@ -43,11 +43,13 @@ def AddTexture(mat,bTex):
     mtex.color = (1,1,1)
     return mtex
 
-def makeMaterial(name, diffuse): #, specular, alpha
+def makeMaterial(name, diffuse, Type): #, specular, alpha
     mat = D.materials.get(name)
     if mat is None:
         mat = D.materials.new(name)
     mat.diffuse_color = diffuse
+    if Type is not None:
+        mat.diffuse_shader = Type 
     # mat.diffuse_shader = 'LAMBERT' 
     # mat.diffuse_intensity = 1.0 
     # mat.specular_color = specular
@@ -137,16 +139,19 @@ MyLight.distance=30
 # #TEXTURES
 sTex = makeMyTex()
 # #MATERIALS
-M1 = makeMaterial("DWhite", (1, 1, 1))
+M1 = makeMaterial("DWhite", (1, 1, 1), None)
 AddTexture(M1,sTex)
 
-M2 = makeMaterial("DPink", (1, 0, 0.85))
+M2 = makeMaterial("DPink", (1, 0, 0.85), None)
 
-M3 = makeMaterial("DBlack", (0.2, 0.2, 0.2))
+M3 = makeMaterial("DBlack", (0.2, 0.2, 0.2), None)
 AddTexture(M3,sTex)
 
+M4 = makeMaterial("DBlue", (0.8, 0.8, 1), "Halo")
+AddTexture(M4,sTex)
+
 # #CONSTs
-COL_N = "DWhite"
+COL_N = "DBlue"
 RN = 0.35
 
 COL_C = "DBlack"
@@ -322,3 +327,10 @@ L77 = LinkPart('L77', P[2], PH[2], RL, COL_L)
 #THIRD C LINK GROUP
 SetParent(L66,Center)
 SetParent(L77,Center)
+
+for obj in C.scene.objects:
+    obj.select = False
+
+Center.select = True
+
+O.view3d.camera_to_view_selected()
