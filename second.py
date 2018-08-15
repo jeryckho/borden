@@ -6,6 +6,7 @@ from bpy import context as C
 from bpy import ops as O
 from mathutils import *
 from math import *
+import random
 
 
 def SetParent(childObject,parentObject):
@@ -27,6 +28,11 @@ def makeMyTex():
     LocatTex.saturation = 1 
     LocatTex.stucci_type = 'WALL_OUT' 
     LocatTex.turbulence = 1
+    return LocatTex
+
+def makeMyWoodTex():
+    LocatTex = D.textures.new('Wood', type = 'WOOD')
+    LocatTex.noise_basis = 'BLENDER_ORIGINAL' 
     return LocatTex
 
 def AddTexture(mat,bTex):
@@ -113,7 +119,7 @@ def DDPart(Name,L,R,S,MatName):
 def CubePart(Name,L,R,S,MatName):
     if Name in D.objects:
         O.object.delete({'active_object': D.objects[Name]})
-    O.mesh.primitive_cube_add(radius=1.0)
+    O.mesh.primitive_cube_add(radius=0.5)
     C.object.name = Name
     LocalObj = D.objects[Name]
     SetPosit(LocalObj,L,R,S)
@@ -125,17 +131,18 @@ if 'Cube' in D.objects:
 
 # #SCENE
 D.scenes['Scene'].render.resolution_x=1080
-D.scenes['Scene'].render.resolution_y=1920
+D.scenes['Scene'].render.resolution_y=1620
+D.scenes['Scene'].render.alpha_mode= "TRANSPARENT"
 
-RDR = 0
+RDR = 1
 
 # #CAM
-zCam = SetPosit(D.objects['Camera'],(2.0,-6.15,3.35),(75,0,20),None)
+zCam = SetPosit(D.objects['Camera'],(2.0,10,25),(75,0,20),None)
 zCam.layers[1-RDR] = True
 zCam.layers[RDR] = False
 
 # #LIGHT
-zLamp = SetPosit(D.objects['Lamp'],(2.05,-10.15,3.30),(13.5,3.15,98.5),None)
+zLamp = SetPosit(D.objects['Lamp'],(2.05,-10.15,9.50),(13.5,3.15,98.5),None)
 zLamp.layers[1-RDR] = True
 zLamp.layers[RDR] = False
 
@@ -146,18 +153,20 @@ MyLight.distance=30
 
 # #TEXTURES
 sTex = makeMyTex()
+sWood = makeMyWoodTex()
 
 # #MATERIALS
 AddTexture( makeMaterial("DWhite", (1, 1, 1), None), sTex )
-AddTexture( makeMaterial("DBlack", (0.2, 0.2, 0.2), None), sTex )
+AddTexture( makeMaterial("DBlue", (0.1, 0.2, 0.8), None), sTex )
+AddTexture( makeMaterial("DBrown", (0.8, 0.4, 0.2), None), sWood )
 
 # #CONSTs
 COL_B = "DWhite"
 RB = (0.095, 0.095, 0.1)
 
-COL_S = "DBlack"
-DS = (12,16,1)
-PS = (0,0,-0.51)
+COL_S = "DBrown"
+DS = (11,15,0.7)
+PS = (0,0,-0.40)
 
 ######
 #INIT#
@@ -169,17 +178,26 @@ Center = CubePart( 'Center', PS, (0,0,0), DS, COL_S)
 #ITERATE#
 #########
 
-for iterX in range(100):
-    for iterY in range(140):
-        SetParent( CubePart( 'Cube_'+str(iterX)+'_'+str(iterY), ( -5 + iterX/10, -7 + iterY/10 , 0), (0,0,0), RB, COL_B), Center )
-
-######
-#THEN#
-######
+O.mesh.primitive_cube_add(radius=0.095/2)
+c_name = C.active_object.name
+O.mesh.primitive_grid_add(x_subdivisions=100, y_subdivisions=140, radius=0.5)
+g_name = C.active_object.name
+C.active_object.scale = (10,14,1)
+O.object.select_pattern(pattern=c_name, extend=False)
+O.object.select_pattern(pattern=g_name, extend=True)
+O.object.parent_set(type='OBJECT')
+C.object.dupli_type = 'VERTS'
+O.object.duplicates_make_real()
 
 for obj in C.scene.objects:
     obj.select = False
 
-Center.select = True
+for iterX in range(100,14000):
+    D.objects["Cube." + str(iterX)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
 
-O.view3d.camera_to_view_selected()
+D.objects["Cube.6666"].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
+
+tt = zCam.constraints.new('TRACK_TO')
+tt.target = Center
+tt.track_axis = "TRACK_NEGATIVE_Z"
+tt.up_axis = "UP_Y"
