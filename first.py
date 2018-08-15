@@ -41,13 +41,16 @@ def AddTexture(mat,bTex):
     mtex.color = (1,1,1)
     return mtex
 
-def makeMaterial(name, diffuse, Type): #, specular, alpha
+def makeMaterial(name, diffuse, Type, Alpha): #, specular, alpha
     mat = D.materials.get(name)
     if mat is None:
         mat = D.materials.new(name)
     mat.diffuse_color = diffuse
     if Type is not None:
-        mat.diffuse_shader = Type 
+        mat.type = Type
+    if Alpha is not None:
+        mat.alpha = Alpha
+
     # mat.diffuse_shader = 'LAMBERT' 
     # mat.diffuse_intensity = 1.0 
     # mat.specular_color = specular
@@ -115,9 +118,9 @@ if 'Cube' in D.objects:
 
 # #SCENE
 D.scenes['Scene'].render.resolution_x=1080
-D.scenes['Scene'].render.resolution_y=1920
+D.scenes['Scene'].render.resolution_y=1080
 
-RDR = 0
+RDR = 1
 
 # #CAM
 zCam = SetPosit(D.objects['Camera'],(2.0,-6.15,3.35),(75,0,20),None)
@@ -137,15 +140,15 @@ MyLight.distance=30
 # #TEXTURES
 sTex = makeMyTex()
 # #MATERIALS
-M1 = makeMaterial("DWhite", (1, 1, 1), None)
+M1 = makeMaterial("DWhite", (1, 1, 1), None, None)
 AddTexture(M1,sTex)
 
-M2 = makeMaterial("DPink", (1, 0, 0.85), None)
+M2 = makeMaterial("DPink", (1, 0, 0.85), None, None)
 
-M3 = makeMaterial("DBlack", (0.2, 0.2, 0.2), None)
+M3 = makeMaterial("DBlack", (0, 0, 0), None, None)
 AddTexture(M3,sTex)
 
-M4 = makeMaterial("DBlue", (0.8, 0.8, 1), "Halo")
+M4 = makeMaterial("DBlue", (0.33, 0.66, 0.99), "HALO", 0.02)
 AddTexture(M4,sTex)
 
 # #CONSTs
@@ -230,7 +233,7 @@ for iter in range(3):
 ######
 
 for obj in C.scene.objects:
-    obj.select = False
+    obj.select = True
 
 Center.select = True
 
