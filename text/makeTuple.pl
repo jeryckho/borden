@@ -2,7 +2,7 @@ use strict;
 use utf8;
 use Data::Dumper;
 
-my($text) = "Ceci est un test avec des accents hé à oui.";
+my($text) = "Ceci est un test avec des accents hé à oui. Avec un texte quand même un peu plus long... Et voilà. Donc, comme déjà évoqué, on est sur du long, du très très long, même. A voir, si c'est vraiment utile tout ça.";
 
 my @Res;
 
@@ -40,34 +40,67 @@ my $List = {
     'u' => 26,
     'z' => 27,
     'v' => 28,
-    '?' => 29,
-    ',' => 30,
-    '.' => 31,
+    '.' => 32,
+    "'" => 33,
+    '!' => 36,
+    '?' => 40,
+    ',' => 48,
 };
 
 $text =~ y/A-Z/a-z/;
-$text =~ y/èé/e/s;
-$text =~ y/à/a/s;
+$text =~ y/àâä/a/s;
+$text =~ y/èéêë/e/s;
+$text =~ y/ô/o/s;
+$text =~ y/ù/u/s;
+$text =~ y/ç/c/s;
+$text =~ y/;/,/s;
 
-# print $text;
+my( $X, $Y ) = ( 1, 1 );
+my( $MaxX, $DeltaY ) = ( 98, 8 );
+my( $Sens ) = 1;
 
-my($X,$Y) = (1,1);
-
-foreach my $char (split //, $text) {
-    if (exists $List->{$char}){
-        my(@lst) = dec2lst($List->{$char});
-        # print "$char : [ $X , " . $Y . " ] <" .join('|', @lst) . "> " . ($#lst+1) . " \n";
-        for (my $idz = 0;  $idz <= $#lst; $idz++) {
-            $Res[ $X ][ $Y + $idz ] = $lst[$idz];
-            # print ".";
-        }
-        $X++;
-    } else {
-        warn('oups ' . $char );
+foreach my $word (split / +/, $text) {
+    if (($X + $Sens*(length $word)) > $MaxX) {
+        $X = $MaxX;
+        $Y += $DeltaY;
+        $Sens *= -1;
+    } elsif (($X + $Sens*(length $word)) < 1) {
+        $X = 1;
+        $Y += $DeltaY;
+        $Sens *= -1;
     }
+    foreach my $char (split //, $word) {
+        if (exists $List->{$char}){
+            my(@lst) = dec2lst($List->{$char});
+            for (my $idz = 0;  $idz <= $#lst; $idz++) {
+                $Res[ $X ][ $Y + $idz ] = $lst[$idz];
+            }
+            $X += $Sens;
+            if ($X >= $MaxX) {
+                $X = $MaxX;
+                $Y += $DeltaY;
+                $Sens *= -1;
+            } elsif ($X <= 1) {
+                $X = 1;
+                $Y += $DeltaY;
+                $Sens *= -1;
+            }
+        } else {
+            warn('oups ' . $char );
+        }
+    }
+    $X += $Sens;
 }
 
-print Dumper(\@Res);
+my @Ligs = ();
+for (my $idy = 0; $idy < 140; $idy ++) {
+    my(@Loc);
+    for (my $idx = 0; $idx < 100; $idx ++) {
+        push( @Loc, $Res[$idx][$idy]);
+    }
+    push( @Ligs, "\t(" . join(',', @Loc) . ')' );
+}
+print "(\n". join(",\n", @Ligs) . "\n)\n";
 
 exit();
 
