@@ -195,7 +195,7 @@ for obj in C.scene.objects:
 
 for iterY in range(1,140):
     for iterX in range(100):
-        D.objects["Cube." + str(iterY*100 + iterX +1)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
+        D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
 
 
 tt = zCam.constraints.new('TRACK_TO')
@@ -203,7 +203,8 @@ tt.target = Center
 tt.track_axis = "TRACK_NEGATIVE_Z"
 tt.up_axis = "UP_Y"
 
-D.scenes['Scene'].render.filepath = './image.jpg'
-O.render.render( write_still=True )
+if RDR == 1:
+    D.scenes['Scene'].render.filepath = './image.jpg'
+    O.render.render( write_still=True )
 
 # O.wm.quit_blender()
