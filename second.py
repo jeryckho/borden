@@ -1,5 +1,5 @@
 # "C:\Program Files\Blender Foundation\Blender\blender.exe" --python second.py
-
+# docker run --rm -v ~/blender/py/:/media/ ikester/blender --python /media/second.py
 import bpy
 from bpy import data as D
 from bpy import context as C
@@ -8,6 +8,7 @@ from mathutils import *
 from math import *
 import random
 
+# TX = ()
 
 def SetParent(childObject,parentObject):
     childObject.parent = parentObject
@@ -22,25 +23,25 @@ def MakeUnion(From,With,Name):
 
 def makeMyTex():
     LocatTex = D.textures.new('Stucci', type = 'STUCCI')
-    LocatTex.noise_basis = 'BLENDER_ORIGINAL' 
+    LocatTex.noise_basis = 'BLENDER_ORIGINAL'
     LocatTex.noise_scale = 0.02
-    LocatTex.noise_type = 'SOFT_NOISE' 
-    LocatTex.saturation = 1 
-    LocatTex.stucci_type = 'WALL_OUT' 
+    LocatTex.noise_type = 'SOFT_NOISE'
+    LocatTex.saturation = 1
+    LocatTex.stucci_type = 'WALL_OUT'
     LocatTex.turbulence = 1
     return LocatTex
 
 def makeMyWoodTex():
     LocatTex = D.textures.new('Wood', type = 'WOOD')
-    LocatTex.noise_basis = 'BLENDER_ORIGINAL' 
+    LocatTex.noise_basis = 'BLENDER_ORIGINAL'
     return LocatTex
 
 def AddTexture(mat,bTex):
     mtex = mat.texture_slots.add()
     mtex.texture = bTex
     mtex.texture_coords = 'ORCO'
-    mtex.use_map_color_diffuse = False 
-    mtex.use_map_normal = True 
+    mtex.use_map_color_diffuse = False
+    mtex.use_map_normal = True
     mtex.normal_factor = 0.1
     mtex.blend_type = 'MIX'
     mtex.use_rgb_to_intensity = True
@@ -53,9 +54,9 @@ def makeMaterial(name, diffuse, Type): #, specular, alpha
         mat = D.materials.new(name)
     mat.diffuse_color = diffuse
     if Type is not None:
-        mat.diffuse_shader = Type 
-    # mat.diffuse_shader = 'LAMBERT' 
-    # mat.diffuse_intensity = 1.0 
+        mat.diffuse_shader = Type
+    # mat.diffuse_shader = 'LAMBERT'
+    # mat.diffuse_intensity = 1.0
     # mat.specular_color = specular
     # mat.specular_shader = 'COOKTORR'
     # mat.specular_intensity = 0.5
@@ -71,9 +72,9 @@ def setMaterial(ob, MatName):
         ob.data.materials.append(mat)
     return ob
 
-def SetRotate(obj,R): 
+def SetRotate(obj,R):
     obj.rotation_euler = ( radians(R[0]) , radians(R[1]) , radians(R[2]) )
-    return obj    
+    return obj
 
 def SetPosit(obj,L,R,S):
     if S is not None:
@@ -92,10 +93,10 @@ def LinkPart(Name, P1, P2, rad, MatName):
     dist = sqrt(PD[0]**2 + PD[1]**2 + PD[2]**2)
 
     O.mesh.primitive_cylinder_add(
-        radius = rad, 
-        depth = dist,
-        location = (PD[0]/2 + P1[0], PD[1]/2 + P1[1], PD[2]/2 + P1[2])   
-    ) 
+    radius = rad,
+    depth = dist,
+    location = (PD[0]/2 + P1[0], PD[1]/2 + P1[1], PD[2]/2 + P1[2])
+    )
     C.object.name = Name
     LocalObj = D.objects[Name]
     LocalObj.rotation_euler = ( 0 , acos(PD[2]/dist), atan2(PD[1], PD[0]))
@@ -192,12 +193,17 @@ O.object.duplicates_make_real()
 for obj in C.scene.objects:
     obj.select = False
 
-for iterX in range(100,14000):
-    D.objects["Cube." + str(iterX)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
+for iterY in range(1,140):
+    for iterX in range(100):
+        D.objects["Cube." + str(iterY*100 + iterX +1)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
 
-D.objects["Cube.6666"].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
 
 tt = zCam.constraints.new('TRACK_TO')
 tt.target = Center
 tt.track_axis = "TRACK_NEGATIVE_Z"
 tt.up_axis = "UP_Y"
+
+D.scenes['Scene'].render.filepath = './image.jpg'
+O.render.render( write_still=True )
+
+# O.wm.quit_blender()
