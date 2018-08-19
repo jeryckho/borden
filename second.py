@@ -1,6 +1,11 @@
 # "C:\Program Files\Blender Foundation\Blender\blender.exe" --python second.py -- -q 1
 # docker run --rm -v ~/blender/py/:/media/ ikester/blender --python /media/second.py -- -r /media/img.png
 
+# A FAIRE
+# Frames
+# Copper
+# Wood Edges
+
 import sys       # to get command line args
 import argparse # to parse options for us and print a nice help message
 
@@ -42,8 +47,6 @@ if args.py_path:
     sys.path.append(args.py_path)
     import msg
     TX = msg.TX
-else:
-    TX = ()
 
 def SetParent(childObject,parentObject):
     childObject.parent = parentObject
@@ -235,8 +238,12 @@ for obj in C.scene.objects:
 
 for iterY in range(1,140):
     for iterX in range(100):
-        D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
+        if args.py_path:
+            D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
+        else:
+            D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
 
+D.objects.remove( D.objects["Cube"], True)
 
 tt = zCam.constraints.new('TRACK_TO')
 tt.target = Center
