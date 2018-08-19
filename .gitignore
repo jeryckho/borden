@@ -2,3 +2,4 @@
 *.blend
 *.png
 *.jpg
+__pycache__

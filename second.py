@@ -23,6 +23,11 @@ parser.add_argument(
     help="Quit after rendering",
 )
 
+parser.add_argument(
+    "-p", "--py", dest="py_path", metavar='FILE',
+    help="Home path",
+)
+
 args = parser.parse_args(argv)
 
 import bpy
@@ -33,7 +38,12 @@ from mathutils import *
 from math import *
 import random
 
-# TX = ()
+if args.py_path:
+    sys.path.append(args.py_path)
+    import msg
+    TX = msg.TX
+else:
+    TX = ()
 
 def SetParent(childObject,parentObject):
     childObject.parent = parentObject
