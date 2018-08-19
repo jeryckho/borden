@@ -1,5 +1,30 @@
-# "C:\Program Files\Blender Foundation\Blender\blender.exe" --python second.py
-# docker run --rm -v ~/blender/py/:/media/ ikester/blender --python /media/second.py
+# "C:\Program Files\Blender Foundation\Blender\blender.exe" --python second.py -- -q 1
+# docker run --rm -v ~/blender/py/:/media/ ikester/blender --python /media/second.py -- -r /media/img.png
+
+import sys       # to get command line args
+import argparse # to parse options for us and print a nice help message
+
+argv = sys.argv
+
+if "--" not in argv:
+    argv = []  # as if no args are passed
+else:
+    argv = argv[argv.index("--") + 1:] # get all args after "--"
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "-r", "--render", dest="render_path", metavar='FILE',
+    help="Render an image to the specified path",
+)
+
+parser.add_argument(
+    "-q", "--quit", dest="then_quit", type=str,
+    help="Quit after rendering",
+)
+
+args = parser.parse_args(argv)
+
 import bpy
 from bpy import data as D
 from bpy import context as C
@@ -135,7 +160,10 @@ D.scenes['Scene'].render.resolution_x=1080
 D.scenes['Scene'].render.resolution_y=1620
 D.scenes['Scene'].render.alpha_mode= "TRANSPARENT"
 
-RDR = 1
+if args.render_path:
+    RDR = 1
+else:
+    RDR = 0
 
 # #CAM
 zCam = SetPosit(D.objects['Camera'],(2.0,10,25),(75,0,20),None)
@@ -157,6 +185,7 @@ sTex = makeMyTex()
 sWood = makeMyWoodTex()
 
 # #MATERIALS
+makeMaterial("DBlack", (0, 0, 0), None)
 AddTexture( makeMaterial("DWhite", (1, 1, 1), None), sTex )
 AddTexture( makeMaterial("DBlue", (0.1, 0.2, 0.8), None), sTex )
 AddTexture( makeMaterial("DBrown", (0.8, 0.4, 0.2), None), sWood )
@@ -184,6 +213,7 @@ c_name = C.active_object.name
 O.mesh.primitive_grid_add(x_subdivisions=100, y_subdivisions=140, radius=0.5)
 g_name = C.active_object.name
 C.active_object.scale = (10,14,1)
+setMaterial(C.active_object, "DBlack")
 O.object.select_pattern(pattern=c_name, extend=False)
 O.object.select_pattern(pattern=g_name, extend=True)
 O.object.parent_set(type='OBJECT')
@@ -203,8 +233,10 @@ tt.target = Center
 tt.track_axis = "TRACK_NEGATIVE_Z"
 tt.up_axis = "UP_Y"
 
-if RDR == 1:
-    D.scenes['Scene'].render.filepath = './image.jpg'
+if args.render_path:
+    D.scenes['Scene'].render.use_file_extension = True
+    D.scenes['Scene'].render.filepath = args.render_path
     O.render.render( write_still=True )
-
-# O.wm.quit_blender()
+    
+if args.then_quit:
+    O.wm.quit_blender()

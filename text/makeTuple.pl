@@ -2,7 +2,7 @@ use strict;
 use utf8;
 use Data::Dumper;
 
-my($text) = "Ceci est un test avec des accents hé à oui. Avec un texte quand même un peu plus long... Et voilà. Donc, comme déjà évoqué, on est sur du long, du très très long, même. A voir, si c'est vraiment utile tout ça.";
+my($text) = "Ma très chère Iz, j'espère que votre voyage s'est bien passé. Je sais que la cité d’Esmyrion est bien loin de de votre zone habituelle. Le front est un endroit dangereux. Je vous conjure d'être vigilante. Je ne vous apprends rien, une Exécutrice vivante est une Exécutrice prudente. Ma mère m'a entretenu des détails de votre mission. Trouvez l'exécutrice Ida, c'est sans doute la personne la plus qualifiée en ce qui concerne le parasite. Renseignez vous sur de possibles mouvements de troupes. Si l'armée ennemie a fait l'erreur de se scinder, nous tenons peut-être l'occasion de terminer cette guerre. A l'inverse, s'ils attaquent une cité sans défense, cela s'avérerait catastrophique pour le peuple du protectorat.";
 
 my @Res;
 
@@ -54,6 +54,8 @@ $text =~ y/ô/o/s;
 $text =~ y/ù/u/s;
 $text =~ y/ç/c/s;
 $text =~ y/;/,/s;
+$text =~ y/’/'/s;
+$text =~ y/-/ /s;
 
 my( $X, $Y ) = ( 1, 1 );
 my( $MaxX, $DeltaY ) = ( 98, 8 );
