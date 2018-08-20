@@ -2,7 +2,7 @@ use strict;
 use utf8;
 use Data::Dumper;
 
-my($text) = "Ma très chère Iz, j'espère que votre voyage s'est bien passé. Je sais que la cité d’Esmyrion est bien loin de de votre zone habituelle. Le front est un endroit dangereux. Je vous conjure d'être vigilante. Je ne vous apprends rien, une Exécutrice vivante est une Exécutrice prudente. Ma mère m'a entretenu des détails de votre mission. Trouvez l'exécutrice Ida, c'est sans doute la personne la plus qualifiée en ce qui concerne le parasite. Renseignez vous sur de possibles mouvements de troupes. Si l'armée ennemie a fait l'erreur de se scinder, nous tenons peut-être l'occasion de terminer cette guerre. A l'inverse, s'ils attaquent une cité sans défense, cela s'avérerait catastrophique pour le peuple du protectorat.";
+my($text) = "Ma très chère Iz, j'espère que votre voyage s'est bien passé. Je sais que la cité d’Esmyrion est bien loin de de votre zone habituelle. Le front est un endroit dangereux. Je vous conjure d'être vigilante. Je ne vous apprends rien, une Exécutrice vivante est une Exécutrice prudente. Ma mère m'a entretenu des détails de votre mission. Trouvez l'exécutrice Ida, c'est sans doute la personne la plus qualifiée en ce qui concerne le parasite. Renseignez vous sur de possibles mouvements de troupes. Si l'armée ennemie a fait l'erreur de se scinder, nous tenons peut-être l'occasion de changer la dynamique de cette guerre. A l'inverse, s'ils attaquent une cité sans défense, cela s'avérerait catastrophique pour le peuple du protectorat. Je suis certaine que vous comprenez cela. Mon autre source d’inquiétude, c’est l’apparition de noms issus du folklore barbare. Nous pensons tous qu’il s’agit avant tout d’une tentative de déstabilisation. Toutefois, nous devons nous en assurer. Essayez d’en savoir plus. Vous avez toute ma confiance. De notre côté, nous sommes en train de rapatrier Hornin. Nous souhaitons le soumettre à la question, mais sans prendre le risque que le parasite le sache. J’ai appris que vous auriez aimé rencontrer Téo. Cela vous sera accordé, soyez-en certaine. Ma mère a initié le programme des Exécuteurs, et j’en estime la valeur. Dame Orélia, souveraine du Protectorat, Grande Matriache.";
 
 my @Res;
 
@@ -102,7 +102,7 @@ for (my $idy = 0; $idy < 140; $idy ++) {
     }
     push( @Ligs, "\t(" . join(',', @Loc) . ')' );
 }
-print "(\n". join(",\n", @Ligs) . "\n)\n";
+print "TX = (\n". join(",\n", @Ligs) . "\n)\n";
 
 exit();
 
