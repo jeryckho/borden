@@ -1,9 +1,13 @@
 use strict;
 use utf8;
 use Data::Dumper;
+use Getopt::Long;
+
+my $data = "";
+GetOptions ( "file=s" => \$data );
 
 our($text);
-require "text.pl"; 
+require 'text.pl';
 
 my @Res;
 
@@ -13,7 +17,7 @@ for (my $idx = 0; $idx < 100; $idx ++) {
     }
 }
 
-my $List = {
+our($List) = {
     ' ' => 0,
     'a' => 1,
     'b' => 2,
@@ -72,28 +76,14 @@ foreach my $word (split / +/, $text) {
         $Y += $DeltaY;
         $Sens *= -1;
     }
-    foreach my $char (split //, $word) {
-        if (exists $List->{$char}){
-            my(@lst) = dec2lst($List->{$char});
-            for (my $idz = 0;  $idz <= $#lst; $idz++) {
-                $Res[ $X ][ $Y + $idz ] = $lst[$idz];
-            }
-            $X += $Sens;
-            if ($X >= $MaxX) {
-                $X = $MaxX;
-                $Y += $DeltaY;
-                $Sens *= -1;
-            } elsif ($X <= 1) {
-                $X = 1;
-                $Y += $DeltaY;
-                $Sens *= -1;
-            }
-        } else {
-            warn('oups ' . $char );
-        }
-    }
-    $X += $Sens;
+
+    $X = WriteWord (\@Res, $X, $Y, $word, $Sens, 1);
+    $X += $Sens; # Espace
 }
+
+WriteLine(\@Res, 132, 0.5);
+WriteWord (\@Res, 1, 134, 'cko', 1, 0.5);
+WriteWord (\@Res, 98, 134, 'cko', -1, 0.5);
 
 my @Ligs = ();
 for (my $idy = 0; $idy < 140; $idy ++) {
@@ -103,10 +93,44 @@ for (my $idy = 0; $idy < 140; $idy ++) {
     }
     push( @Ligs, "\t(" . join(',', @Loc) . ')' );
 }
-print "TX = (\n". join(",\n", @Ligs) . "\n)\n";
+
+my($msg) = "TX = (\n". join(",\n", @Ligs) . "\n)\n"; 
+
+if ($data eq '') {
+    print $msg;
+} else {
+    open(FIC, '>'.$data);
+    print FIC $msg;
+    close(FIC);
+}
 
 exit();
 
+sub WriteWord {
+    my($pRes, $numRow, $numLig, $str, $sens, $val ) = @_;
+
+    foreach my $char (split //, $str) {
+        if (exists $List->{$char}){
+            my(@lst) = dec2lst($List->{$char});
+            for (my $idz = 0;  $idz <= $#lst; $idz++) {
+                $Res[ $numRow ][ $numLig + $idz ] = $lst[$idz]*$val;
+            }
+            $numRow += $sens;
+        } else {
+            warn('oups ' . $char );
+        }
+    }
+    return $numRow
+    
+}
+
+sub WriteLine {
+    my($pRes, $numLig, $val ) = @_;
+
+    for (my $idx = 1; $idx < 99; $idx ++) {
+        $pRes->[ $idx ][ $numLig ] = $val;
+    }
+}
 sub dec2bin {
     my $str = unpack("B32", pack("N", shift));
     $str =~ s/^0+(?=\d)//;   # otherwise you'll get leading zeros
