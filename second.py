@@ -29,6 +29,11 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "-f", "--frame", dest="has_frame", type=str,
+    help="Has frame",
+)
+
+parser.add_argument(
     "-p", "--py", dest="py_path", metavar='FILE',
     help="Home path",
 )
@@ -236,12 +241,32 @@ O.object.duplicates_make_real()
 for obj in C.scene.objects:
     obj.select = False
 
-for iterY in range(1,140):
-    for iterX in range(100):
-        if args.py_path:
-            D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
-        else:
+if args.has_frame:
+    C.scene.frame_start = 0
+    C.scene.frame_end   = 220
+    O.screen.frame_jump(end=False)
+
+    for iterY in range(1,140):
+        C.scene.frame_set(iterY)
+        for iterX in range(100):
             D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
+            D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+        C.scene.frame_set(iterY+25)
+        for iterX in range(100):
+            D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
+            D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+    O.screen.frame_jump(end=False)
+            # if args.py_path:
+            #     D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
+            # else:
+
+else:
+    for iterY in range(1,140):
+        for iterX in range(100):
+            if args.py_path:
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
+            else:
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
 
 D.objects.remove( D.objects["Cube"], True)
 
@@ -253,7 +278,10 @@ tt.up_axis = "UP_Y"
 if args.render_path:
     D.scenes['Scene'].render.use_file_extension = True
     D.scenes['Scene'].render.filepath = args.render_path
-    O.render.render( write_still=True )
-    
+    if args.has_frame:
+        O.render.render( animation=True, write_still=True )
+    else:
+        O.render.render( write_still=True )
+
 if args.then_quit:
     O.wm.quit_blender()
