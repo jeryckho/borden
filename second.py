@@ -1,8 +1,8 @@
 # "C:\Program Files\Blender Foundation\Blender\blender.exe" --python second.py -- -q 1
-# docker run --rm -v ~/blender/py/:/media/ ikester/blender --python /media/second.py -- -r /media/img.png
+# docker run --rm -v ~/blender/py/:/media/ ikester/blender -F AVIJPEG --python /media/second.py -- -r /media/res/ -f 1
 
 # A FAIRE
-# Frames
+# Frames (WIP)
 # Copper
 # Wood Edges
 
@@ -243,32 +243,49 @@ for obj in C.scene.objects:
 
 if args.has_frame:
     C.scene.frame_start = 0
-    C.scene.frame_end   = 220
+    C.scene.frame_end   = 300
     O.screen.frame_jump(end=False)
 
-    for iterY in range(1,140):
-        if iterY%2 == 0:
-            C.scene.frame_set(iterY)
-            for iterX in range(100):
+    for iterX in range(100):
+        if iterX%2 == 0:
+            C.scene.frame_set(iterX)
+            for iterY in range(1,140):
                 D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
                 D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
-            C.scene.frame_set(iterY+25)
-            for iterX in range(100):
+            C.scene.frame_set(iterX+25)
+            for iterY in range(1,140):
                 D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
                 D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
         else:
-            C.scene.frame_set(140-iterY)
-            for iterX in range(100):
+            C.scene.frame_set(99-iterX)
+            for iterY in range(1,140):
                 D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
                 D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
-            C.scene.frame_set((140-iterY)+25)
-            for iterX in range(100):
+            C.scene.frame_set((99-iterX)+25)
+            for iterY in range(1,140):
                 D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
                 D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+        if args.py_path:
+            if iterX%2 == 0:
+                C.scene.frame_set(150+iterX)
+                for iterY in range(1,140):
+                    D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
+                    D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+                C.scene.frame_set(150+iterX+25)
+                for iterY in range(1,140):
+                    D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + + TX[iterY][iterX] + random.randint(0, 200)/2000 )
+                    D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+            else:
+                C.scene.frame_set(150+(99-iterX)
+                for iterY in range(1,140):
+                    D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
+                    D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+                C.scene.frame_set(150+(99-iterX)+25)
+                for iterY in range(1,140):
+                    D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + + TX[iterY][iterX] + random.randint(0, 200)/2000 )
+                    D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+            
     O.screen.frame_jump(end=False)
-            # if args.py_path:
-            #     D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
-            # else:
 
 else:
     for iterY in range(1,140):
@@ -288,7 +305,6 @@ tt.up_axis = "UP_Y"
 if args.render_path:
     D.scenes['Scene'].render.filepath = args.render_path
     if args.has_frame:
-        bpy.types.ImageFormatSettings.file_format = "FFMPEG"
         O.render.render( animation=True )
     else:
         D.scenes['Scene'].render.use_file_extension = True
