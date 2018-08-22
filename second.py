@@ -247,14 +247,24 @@ if args.has_frame:
     O.screen.frame_jump(end=False)
 
     for iterY in range(1,140):
-        C.scene.frame_set(iterY)
-        for iterX in range(100):
-            D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
-            D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
-        C.scene.frame_set(iterY+25)
-        for iterX in range(100):
-            D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
-            D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+        if iterY%2 == 0:
+            C.scene.frame_set(iterY)
+            for iterX in range(100):
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+            C.scene.frame_set(iterY+25)
+            for iterX in range(100):
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+        else:
+            C.scene.frame_set(140-iterY)
+            for iterX in range(100):
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + random.randint(0, 200)/2000 )
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
+            C.scene.frame_set((140-iterY)+25)
+            for iterX in range(100):
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 2 + random.randint(0, 200)/2000 )
+                D.objects["Cube." + str(iterY*100 - iterX + 100)].keyframe_insert(data_path="scale", index=-1)
     O.screen.frame_jump(end=False)
             # if args.py_path:
             #     D.objects["Cube." + str(iterY*100 - iterX + 100)].scale = ( 1, 1, 1 + TX[iterY][iterX] + random.randint(0, 200)/2000 )
@@ -276,11 +286,12 @@ tt.track_axis = "TRACK_NEGATIVE_Z"
 tt.up_axis = "UP_Y"
 
 if args.render_path:
-    D.scenes['Scene'].render.use_file_extension = True
     D.scenes['Scene'].render.filepath = args.render_path
     if args.has_frame:
-        O.render.render( animation=True, write_still=True )
+        bpy.types.ImageFormatSettings.file_format = "FFMPEG"
+        O.render.render( animation=True )
     else:
+        D.scenes['Scene'].render.use_file_extension = True
         O.render.render( write_still=True )
 
 if args.then_quit:
